@@ -20,7 +20,7 @@ spring:
     properties:
       hibernate.format_sql: true # ??? ??? ???.
       hibernate.default_batch_fetch_size: 100 # N+1 ?? ?? ??.
-  h2.console.enabled: true
+#  h2.console.enabled: true #기본값이 false.
   sql.init.mode: always
 
 ---
