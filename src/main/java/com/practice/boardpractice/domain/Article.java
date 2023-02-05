@@ -23,9 +23,9 @@ import java.util.Set;
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
-@EntityListeners(AuditingEntityListener.class) // Auditing 설정 추가.
+//@EntityListeners(AuditingEntityListener.class) // Auditing 설정 추가. Auditing Class로 뺀다.
 @Entity
-public class Article {
+public class Article extends AuditingFields { // AuditingFields 클래스로 공통 부분을 뽑고 상속해서 쓴다.
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL은 Identity방식으로 생성. <-> 오라클은 Sequel.
     private Long id;
@@ -39,11 +39,6 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     @ToString.Exclude // Article과 ArticleComments 간의 순환참조 발생하기 때문에 ToString에서 제외.
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
-
-    @CreatedDate @Column(nullable = false) private LocalDateTime createdAt;
-    @CreatedBy @Column(nullable = false, length = 100) private String createdBy;
-    @LastModifiedDate @Column(nullable = false) private LocalDateTime modifiedAt;
-    @LastModifiedBy @Column(nullable = false, length = 100) private String modifiedBy;
 
     private Article(String title, String content, String hashtag) {
         this.title = title;
