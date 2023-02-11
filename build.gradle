@@ -22,8 +22,11 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// Repository에 애노테이션 붙이면 자동으로 CRUD REST API 생성됨.
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-	implementation 'org.springframework.data:spring-data-rest-hal-explorer' // 미리 만들어진 서비스로 웹에서 동작 테스트 가능하도록 함.
+	// 미리 만들어진 서비스로 웹에서 동작 테스트 가능하도록 함.
+	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
 
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
