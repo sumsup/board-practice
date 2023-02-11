@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Disabled("구현 중") // 구현중인 테스트는 전체 테스트에서 제외.
 @DisplayName("View 컨트롤러 - 게시글")
 @WebMvcTest(ArticleController.class) // 입력된 컨트롤러만 로딩해서 테스트 수행.
 class ArticleControllerTest {
@@ -31,12 +30,13 @@ class ArticleControllerTest {
         // When & Then.
         mvc.perform(get("/articles"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/index")) // view 있는지 이름으로 검증.
                 .andExpect(model().attributeExists("articles")) // articles 데이터 유무를 확인.
                 .andExpect(model().attributeExists("articlesComments"));
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
     @Test
     void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
@@ -51,6 +51,7 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articlesComments"));
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 검색 전용 페이지 - 정상 호출")
     @Test
     void givenNothing_whenRequestingArticleSearchView_thenReturnsArticleSearchView() throws Exception {
@@ -62,6 +63,7 @@ class ArticleControllerTest {
                 .andExpect(content().contentType(MediaType.TEXT_HTML));
     }
 
+    @Disabled("구현 중")
     @DisplayName("[view][GET] 게시글 해시태그 검색 전용 페이지 - 정상 호출")
     @Test
     void givenNothing_whenRequestingArticleHashtagSearchView_thenReturnsArticleHashtagSearchView() throws Exception {
