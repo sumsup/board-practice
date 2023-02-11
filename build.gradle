@@ -1,6 +1,8 @@
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '2.7.8'
+
+	// 스프링 디펜던시들의 버전을 현재 스프링 버전과 맞게 자동으로 관리해주는 플러그인 이다.
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
@@ -28,6 +30,16 @@ dependencies {
 	// 미리 만들어진 서비스로 웹에서 동작 테스트 가능하도록 함.
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
 
+	// queryDSL 설정
+	implementation "com.querydsl:querydsl-jpa"
+	implementation "com.querydsl:querydsl-core"
+	implementation "com.querydsl:querydsl-collections"
+
+	// querydsl-apt의 의존성 추가는 버전 정보가 중간에 들어가 있어서 spring dependency management 가 버전정보를 제공 못함.
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -39,4 +51,25 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+// Querydsl Q클래스 설정부
+// IDEA가 빌드하는 것과 gradle이 빌드하는 것을 일치 시킴. 두번 스캔 하지 않도록.
+// IDEA는 generated 폴더에 Q클래스를 생성. gradle는 build 폴더에 생성.
+// 서로 불일치 하는데서 오는 불편을 해소하기 위해서 추가 해줌.
+def generated = 'src/main/generated'
+
+// querydsl QClass 파일 생성 위치를 지정
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(generated))
+}
+
+// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+	main.java.srcDirs += [ generated ]
+}
+
+// gradle clean 시에 QClass 디렉토리 삭제
+clean {
+	delete file(generated)
 }
