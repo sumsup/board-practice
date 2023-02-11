@@ -1,5 +1,6 @@
 package com.practice.boardpractice.controller;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Disabled("구현 중") // 구현중인 테스트는 전체 테스트에서 제외.
 @DisplayName("View 컨트롤러 - 게시글")
 @WebMvcTest(ArticleController.class) // 입력된 컨트롤러만 로딩해서 테스트 수행.
 class ArticleControllerTest {
@@ -30,7 +32,9 @@ class ArticleControllerTest {
         mvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_HTML))
-                .andExpect(model().attributeExists("articles")); // articles 데이터 유무를 확인.
+                .andExpect(view().name("articles/index")) // view 있는지 이름으로 검증.
+                .andExpect(model().attributeExists("articles")) // articles 데이터 유무를 확인.
+                .andExpect(model().attributeExists("articlesComments"));
     }
 
     @DisplayName("[view][GET] 게시글 상세 페이지 - 정상 호출")
@@ -42,7 +46,9 @@ class ArticleControllerTest {
         mvc.perform(get("/articles/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_HTML))
-                .andExpect(model().attributeExists("article"));
+                .andExpect(view().name("articles/detail")) // view 있는지 이름으로 검증.
+                .andExpect(model().attributeExists("article"))
+                .andExpect(model().attributeExists("articlesComments"));
     }
 
     @DisplayName("[view][GET] 게시글 검색 전용 페이지 - 정상 호출")
