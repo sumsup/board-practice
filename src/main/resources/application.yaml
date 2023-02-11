@@ -22,6 +22,9 @@ spring:
       hibernate.default_batch_fetch_size: 100 # N+1 ?? ?? ??.
 #  h2.console.enabled: true #기본값이 false.
   sql.init.mode: always
+  data.rest:
+    base-path: /api
+    detection-strategy: annotated
 
 ---
 
