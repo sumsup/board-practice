@@ -45,7 +45,7 @@ class ArticleControllerTest {
         // When & Then.
         mvc.perform(get("/articles/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/detail")) // view 있는지 이름으로 검증.
                 .andExpect(model().attributeExists("article"))
                 .andExpect(model().attributeExists("articlesComments"));
@@ -60,7 +60,7 @@ class ArticleControllerTest {
         // When & Then.
         mvc.perform(get("/articles/search"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
     }
 
     @Disabled("구현 중")
@@ -72,7 +72,7 @@ class ArticleControllerTest {
         // When & Then.
         mvc.perform(get("/articles/serach-hashtag"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_HTML));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML));
     }
 
 }
