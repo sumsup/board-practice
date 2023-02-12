@@ -30,6 +30,7 @@ dependencies {
 	// 미리 만들어진 서비스로 웹에서 동작 테스트 가능하도록 함.
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
 	// queryDSL 설정
 	implementation "com.querydsl:querydsl-jpa"
