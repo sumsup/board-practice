@@ -29,6 +29,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
 	// 미리 만들어진 서비스로 웹에서 동작 테스트 가능하도록 함.
 	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// 주의 : thymeleaf-extra는 start.spring.io에서 의존성에 spring security랑 thymeleaf를 동시에 넣었을 때만 생성됨.
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	testImplementation 'org.springframework.security:spring-security-test'
 
 	// queryDSL 설정
 	implementation "com.querydsl:querydsl-jpa"
@@ -40,6 +49,7 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
 
+
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -47,6 +57,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 tasks.named('test') {
