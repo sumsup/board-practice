@@ -224,4 +224,7 @@ gradle-app.setting
 ### QueryDSL Output Q-Classes ###
 src/main/generated/
 
+### IntelliJ JPA Buddy plug-in ###
+.jpb
+
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,intellij+all,windows,macos,visualstudiocode

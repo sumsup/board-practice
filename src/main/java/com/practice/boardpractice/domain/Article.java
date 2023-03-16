@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Getter
-@ToString
+@ToString(callSuper = true) // AuditingFields 의 데이터 출력도 toString으로 찍겠다고 함.
 @Table(indexes = {
         @Index(columnList = "title"),
         @Index(columnList = "hashtag"),
@@ -24,17 +24,20 @@ public class Article extends AuditingFields { // AuditingFields 클래스로 공
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL은 Identity방식으로 생성. <-> 오라클은 Sequel.
     private Long id;
 
+    @Setter @ManyToOne(optional = false) private UserAccount userAccount; // 유저 정보 (ID)
+
     @Setter @Column(nullable = false) private String title;
     @Setter @Column(nullable = false, length = 10000) private String content;
 
     @Setter private String hashtag;
 
-    @OrderBy("id")
+    @OrderBy("createdAt DESC")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     @ToString.Exclude // Article과 ArticleComments 간의 순환참조 발생하기 때문에 ToString에서 제외.
     private final Set<ArticleComment> articleComments = new LinkedHashSet<>();
 
-    private Article(String title, String content, String hashtag) {
+    private Article(UserAccount userAccount, String title, String content, String hashtag) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
         this.hashtag = hashtag;
@@ -44,8 +47,8 @@ public class Article extends AuditingFields { // AuditingFields 클래스로 공
     }
 
     // new 키워드 없이, 생성하기 편하게 하기 위해 팩토리 패턴으로 of 메서드 추가.
-    public static Article of(String title, String content, String hashtag) {
-        return new Article(title, content, hashtag);
+    public static Article of(UserAccount userAccount, String title, String content, String hashtag) {
+        return new Article(userAccount, title, content, hashtag);
     }
 
     @Override
