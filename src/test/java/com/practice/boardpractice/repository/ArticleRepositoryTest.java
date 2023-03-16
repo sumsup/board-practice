@@ -2,6 +2,7 @@ package com.practice.boardpractice.repository;
 
 import com.practice.boardpractice.config.JpaConfig;
 import com.practice.boardpractice.domain.Article;
+import com.practice.boardpractice.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,9 +49,10 @@ class ArticleRepositoryTest {
     void givenTestData_whenInserting_thenWorksFine() {
         // given.
         long previousCount = articleRepository.count();
+        UserAccount userAccount = UserAccount.of("star", "1234", "com@nv.com", "김", null);
 
         // when. save한 객체를 리턴 받을 수 있음.
-        Article savedArticle = articleRepository.save(Article.of("new article", "new content", "#spring"));
+        Article savedArticle = articleRepository.save(Article.of(userAccount, "new article", "new content", "#spring"));
 
         // then.
         assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
