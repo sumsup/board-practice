@@ -1,29 +1,44 @@
 package com.practice.boardpractice.controller;
 
+import com.practice.boardpractice.domain.type.SearchType;
+import com.practice.boardpractice.dto.response.ArticleResponse;
+import com.practice.boardpractice.dto.response.ArticleWithCommentsResponse;
+import com.practice.boardpractice.service.ArticleService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/articles")
+@RequiredArgsConstructor
 public class ArticleController {
 
-    @GetMapping
-    public String articles(ModelMap map) {
-        map.addAttribute("articles", new ArrayList<>());
+    private final ArticleService articleService;
 
+    @GetMapping
+    public String articles(
+            @RequestParam(required = false) SearchType searchType, // required = false 하면 null 가능.
+            @RequestParam(required = false) String searchValue,
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+            ModelMap map) {
+        map.addAttribute("articles", articleService.searchArticles(searchType, searchValue, pageable)
+                .map(ArticleResponse::from));
 
         return "articles/index";
     }
 
     @GetMapping("/{articleId}")
     public String article(@PathVariable Long articleId, ModelMap map) {
-        map.addAttribute("article", "article"); // todo : 구현할때 데이터 넣어줘야 함.
-        map.addAttribute("articlesComments", new ArrayList<>());
+        ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticle(articleId));
+        map.addAttribute("article", article);
+        map.addAttribute("articleComments", article.articleCommentsResponses());
 
         return "articles/detail";
     }
