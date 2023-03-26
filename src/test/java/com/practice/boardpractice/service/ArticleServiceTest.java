@@ -40,11 +40,28 @@ class ArticleServiceTest {
 
         // When.
         // 제목, 본문, ID, 닉네임, 해시태그.
-        Page<ArticleDto> articles = sut.searchArticles(SearchType.TITLE, "search keyword", pageable);
+        Page<ArticleDto> articles = sut.searchArticles(null, null, pageable);
 
         // Then.
         assertThat(articles).isEmpty();
         then(articleRepository).should().findAll(pageable);
+    }
+
+    @DisplayName("검색어와 함께 게시글을 검색하면, 게시글 페이지를 반환한다.")
+    @Test
+    void givenSearchParameters_whenSearchingArticles_thenReturnsArticlePage() {
+        // Given
+        SearchType searchType = SearchType.TITLE;
+        String searchKeyword = "title";
+        Pageable pageable = Pageable.ofSize(20);
+        given(articleRepository.findByTitleContaining(searchKeyword, pageable)).willReturn(Page.empty());
+
+        // When
+        Page<ArticleDto> articles = sut.searchArticles(searchType, searchKeyword, pageable);
+
+        // Then
+        assertThat(articles).isEmpty();
+        then(articleRepository).should().findByTitleContaining(searchKeyword, pageable);
     }
 
     @DisplayName("게시글을 조회하면, 게시글을 반환한다.")
@@ -147,10 +164,10 @@ class ArticleServiceTest {
 
     private UserAccount createUserAccount() {
         return UserAccount.of(
-                "uno",
+                "kimMS",
                 "password",
-                "uno@email.com",
-                "Uno",
+                "kimMS@email.com",
+                "kimMS",
                 null
         );
     }
@@ -175,23 +192,23 @@ class ArticleServiceTest {
                 content,
                 hashtag,
                 LocalDateTime.now(),
-                "Uno",
+                "kimMS",
                 LocalDateTime.now(),
-                "Uno");
+                "kimMS");
     }
 
     private UserAccountDto createUserAccountDto() {
         return UserAccountDto.of(
                 1L,
-                "uno",
+                "kimMS",
                 "password",
-                "uno@mail.com",
-                "Uno",
+                "kimMS@mail.com",
+                "kimMS",
                 "This is memo",
                 LocalDateTime.now(),
-                "uno",
+                "kimMS",
                 LocalDateTime.now(),
-                "uno"
+                "kimMS"
         );
     }
 }
