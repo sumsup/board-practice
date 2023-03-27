@@ -13,4 +13,31 @@
             </attr>
         </attr>
     </attr>
+
+    <attr sel="#pagination">
+        <!--
+            * /articles?page=3 이렇게 쿼리 param 형태로 변경되서 link를 타고 들어간다.
+            * disabled는 맨 첫 페이지에서는 previous 버튼을 비활성화 시켜줘야 해서 조건을 추가해 줬음.
+        -->
+        <attr sel="li[0]/a"
+              th:text="'previous'"
+              th:href="@{/articles(page=${articles.number - 1})}"
+              th:class="'page-link' + (${articles.number} <= 0 ? ' disabled' : '')"
+        />
+        <!--
+            * each는 페이지 아이템을 페이지 표시 수만큼 설정해 주는 반복문 역할.
+        -->
+        <attr sel="li[1]" th:class="page-item" th:each="pageNumber : ${paginationBarNumbers}">
+            <attr sel="a"
+                  th:text="${pageNumber + 1}"
+                  th:href="@{/articles(page=${pageNumber})}"
+                  th:class="'page-link' + (${pageNumber} == ${articles.number} ? ' disabled' : '')"
+            />
+        </attr>
+        <attr sel="li[2]/a"
+              th:text="'next'"
+              th:href="@{/articles(page=${articles.number + 1})}"
+              th:class="'page-link' + (${articles.number} >= ${articles.totalPages - 1} ? ' disabled' : '')"
+        />
+    </attr>
 </thlogic>
