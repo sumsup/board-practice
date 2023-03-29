@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional
@@ -59,6 +60,7 @@ public class ArticleService {
             article.setHashtag(dto.hashtag());
 
             // Transaction이 끝날때 영속성 컨텍스트가 업데이트를 감지해서 실행 한다.
+            // dto의 setter가 호출된 바가 있다면 알아서 update를 실행함.
             // 이 코드는 명시적으로 update를 해줄때는 추가해 줘도 된다.
 //            articleRepository.save(article);
         } catch (EntityNotFoundException e) {
@@ -68,5 +70,24 @@ public class ArticleService {
 
     public void deleteArticle(long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
+        if (hashtag == null || hashtag.isBlank()) {
+            return Page.empty(pageable);
+        }
+
+        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
+
+        // 위 리턴문은 아래와 같이 풀어 쓸 수 있다.
+//        Page<Article> allHashtag = articleRepository.findByHashtag(hashtag, pageable);
+//        Page<ArticleDto> articleDtos = allHashtag.map(d -> ArticleDto.from(d));
+//        return articleDtos;
+
+    }
+
+    public List<String> getHashtags() {
+        return articleRepository.findAllDistinctHashtags();
     }
 }
