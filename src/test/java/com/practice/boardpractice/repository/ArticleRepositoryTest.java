@@ -24,6 +24,8 @@ class ArticleRepositoryTest {
 
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    @Autowired
+    private UserAccountRepository userAccountRepository;
 
     // 생성자 주입 패턴으로 Autowired가 가능.
     ArticleRepositoryTest(@Autowired ArticleRepository articleRepository,
@@ -50,9 +52,17 @@ class ArticleRepositoryTest {
         // given.
         long previousCount = articleRepository.count();
         UserAccount userAccount = UserAccount.of("star", "1234", "com@nv.com", "김", null);
+        // user정보도 저장해줘야 article을 저장할 때 에러가 안남.
+        // user 객체를 저장하지 않은 상태로 article에 user객체를 할당하고 저장하려고하면 아래와 같이 exception 발생.
+        // userAccount 먼저 저장하라고 함.
+        // TransientPropertyValueException: Not-null property references a transient value - transient instance must be saved before current operation
+        userAccountRepository.save(userAccount);
 
         // when. save한 객체를 리턴 받을 수 있음.
-        Article savedArticle = articleRepository.save(Article.of(userAccount, "new article", "new content", "#spring"));
+        Article savedArticle = articleRepository.saveAndFlush(Article.of(userAccount,
+                "new article",
+                "new content",
+                "#spring"));
 
         // then.
         assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
