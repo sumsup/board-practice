@@ -145,7 +145,7 @@ class ArticleControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/detail")) // view 있는지 이름으로 검증.
                 .andExpect(model().attributeExists("article"))
-                .andExpect(model().attributeExists("articlesComments"));
+                .andExpect(model().attributeExists("articleComments"));
 
         then(articleService).should().getArticleWithComments(articleId); // 컨트롤러에서는 이런식으로 특정 메서드가 호출됐는지로 확인하는 식으로 구현.
     }
