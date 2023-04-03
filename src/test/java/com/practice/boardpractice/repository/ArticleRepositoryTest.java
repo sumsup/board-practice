@@ -1,6 +1,5 @@
 package com.practice.boardpractice.repository;
 
-import com.practice.boardpractice.config.JpaConfig;
 import com.practice.boardpractice.domain.Article;
 import com.practice.boardpractice.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
@@ -8,17 +7,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("testdb")
 @DisplayName("JPA 연결 테스트")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(JpaConfig.class) // Auditing 설정 추가해 주기 위해 Import.
+@Import(ArticleRepositoryTest.TestJpaConfig.class) // Auditing 설정 추가해 주기 위해 Import.
 @DataJpaTest // @Transactional 포함.
 class ArticleRepositoryTest {
 
@@ -101,5 +105,14 @@ class ArticleRepositoryTest {
         // then.
         assertThat(articleRepository.count()).isEqualTo(previousCount - 1);
         assertThat(articleCommentRepository.count()).isEqualTo(previousArticleCommentCount - deletedCommentsSize);
+    }
+
+    @EnableJpaAuditing
+    @TestConfiguration
+    public static class TestJpaConfig {
+        @Bean
+        public AuditorAware<String> auditorAware() {
+            return () -> Optional.of("userKim");
+        }
     }
 }
