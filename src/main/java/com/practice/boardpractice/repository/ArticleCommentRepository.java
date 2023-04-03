@@ -27,6 +27,7 @@ public interface ArticleCommentRepository extends
      findByArticle_ 까지만 하고 ctrl + space하면 자동완성으로 title, Hashtag 등을 보여줌.
     */
     List<ArticleComment> findByArticle_Id(Long articleId);
+    void deleteByIdAndUserAccount_UserId(Long articleCommentId, String userId);
 
     @Override
     default void customize(QuerydslBindings bindings, QArticleComment root) {

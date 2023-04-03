@@ -62,25 +62,30 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(articleId);
-            if (dto.title() != null) {
-                article.setTitle(dto.title()); // java Record에서는 getter setter를 다 만들어주고 dto.title() 이런식으로 호출해 온다.
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.userAccountDto().userId());
+
+            // 게시글의 작성자와 로그인 유저가 일치하면 업데이트 진행.
+            if (article.getUserAccount().equals(userAccount)) {
+                if (dto.title() != null) {
+                    article.setTitle(dto.title()); // java Record에서는 getter setter를 다 만들어주고 dto.title() 이런식으로 호출.
+                }
+                if (dto.content() != null) {
+                    article.setContent(dto.content());
+                }
+                article.setHashtag(dto.hashtag());
             }
-            if (dto.content() != null) {
-                article.setContent(dto.content());
-            }
-            article.setHashtag(dto.hashtag());
 
             // Transaction이 끝날때 영속성 컨텍스트가 업데이트를 감지해서 실행 한다.
             // dto의 setter가 호출된 바가 있다면 알아서 update를 실행함.
-            // 이 코드는 명시적으로 update를 해줄때는 추가해 줘도 된다.
+            // 이 코드는 update를 명시적으로 해줄때는 추가해 줘도 된다.
 //            articleRepository.save(article);
         } catch (EntityNotFoundException e) {
-            log.warn("게시글 업데이트 실패. 게시글을 찾을 수 없습니다 - dto: {}", dto);
+            log.warn("게시글 업데이트 실패. 게시글을 수정하는데 필요한 정보를 찾을 수 없습니다 - {}", e.getLocalizedMessage());
         }
     }
 
-    public void deleteArticle(long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(long articleId, String userId) {
+        articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     @Transactional(readOnly = true)
