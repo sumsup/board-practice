@@ -1,6 +1,7 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.config.TestSecurityConfig;
+import com.practice.boardpractice.controller.ArticleController;
 import com.practice.boardpractice.domain.constant.FormStatus;
 import com.practice.boardpractice.domain.constant.SearchType;
 import com.practice.boardpractice.dto.ArticleDto;
@@ -52,7 +53,7 @@ class ArticleControllerTest {
     @MockBean private PaginationService paginationService;
 
     // 일반 클래스에서는 생성자 파라미터가 한개인 경우 @Autowired를 생략할 수 있지만, 테스트 클래스에서는 명시해 줘야 함.
-    public ArticleControllerTest(
+    ArticleControllerTest(
             @Autowired MockMvc mvc,
             @Autowired FormDataEncoder formDataEncoder) {
         this.mvc = mvc;
@@ -85,7 +86,7 @@ class ArticleControllerTest {
 
     @DisplayName("[view][GET] 게시글 리스트 (게시판) 페이지 - 검색어와 함께 호출")
     @Test
-    public void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
+    void givenSearchKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
         // Given
         SearchType searchType = SearchType.TITLE;
         String searchValue = "title";
@@ -209,7 +210,7 @@ class ArticleControllerTest {
 
     @DisplayName("[view][GET] 게시글 해시태그 검색 페이지 - 검색 해시태그 입력")
     @Test
-    public void givenHashtag_whenRequestingArticleSearchHashtagView_thenReturnsArticleSearchHashtagView() throws Exception {
+    void givenHashtag_whenRequestingArticleSearchHashtagView_thenReturnsArticleSearchHashtagView() throws Exception {
         // Given.
         String hashtag = "#java";
         List<String> hashtags = List.of("#java", "#spring", "#boot");

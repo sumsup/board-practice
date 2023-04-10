@@ -1,6 +1,7 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.config.TestSecurityConfig;
+import com.practice.boardpractice.controller.MainController;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

@@ -13,13 +13,17 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("테스트 도구 - Form 데이터 인코더")
-@Import({FormDataEncoder.class, ObjectMapper.class})
+//@Import({FormDataEncoder.class, ObjectMapper.class}) // @Import는 아래 classes 속성을 이용해서 할당해 줄 수도 있다.
 // TODO: Void.class 하면 클래스 자체를 Import를 안하나? 그럼 왜 SpringBootTest를 Import 하는거지.
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = void.class)
-public class FormDataEncoderTest {
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.NONE,
+        classes = {FormDataEncoder.class, ObjectMapper.class}
+//        classes = void.class
+)
+class FormDataEncoderTest {
     private final FormDataEncoder formDataEncoder;
 
-    public FormDataEncoderTest(@Autowired FormDataEncoder formDataEncoder) {
+    FormDataEncoderTest(@Autowired FormDataEncoder formDataEncoder) {
         this.formDataEncoder = formDataEncoder;
     }
 

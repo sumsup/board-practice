@@ -1,6 +1,7 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.config.TestSecurityConfig;
+import com.practice.boardpractice.controller.ArticleCommentController;
 import com.practice.boardpractice.dto.ArticleCommentDto;
 import com.practice.boardpractice.request.ArticleCommentRequest;
 import com.practice.boardpractice.service.ArticleCommentService;
@@ -36,7 +37,7 @@ class ArticleCommentControllerTest {
     @MockBean
     private ArticleCommentService articleCommentService;
 
-    public ArticleCommentControllerTest(
+    ArticleCommentControllerTest(
             @Autowired MockMvc mvc,
             @Autowired FormDataEncoder formDataEncoder
     ) {
