@@ -1,4 +1,4 @@
-package com.practice.boardpractice.request;
+package com.practice.boardpractice.dto.request;
 
 import com.practice.boardpractice.dto.ArticleCommentDto;
 import com.practice.boardpractice.dto.UserAccountDto;

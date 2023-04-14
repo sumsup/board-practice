@@ -1,7 +1,7 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.dto.security.BoardPrincipal;
-import com.practice.boardpractice.request.ArticleCommentRequest;
+import com.practice.boardpractice.dto.request.ArticleCommentRequest;
 import com.practice.boardpractice.service.ArticleCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +23,7 @@ public class ArticleCommentController {
 
         return "redirect:/articles/" + articleCommentRequest.articleId();
     }
+
 
     // HTML form은 GET과 POST만 지원하고 있다.
     @PostMapping ("/{commentId}/delete")

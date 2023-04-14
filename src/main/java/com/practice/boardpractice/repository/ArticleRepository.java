@@ -33,11 +33,11 @@ public interface ArticleRepository extends
         // 검색 기능에서 제외하기 위함.
         bindings.excludeUnlistedProperties(true);
         // 검색 기능에 포함.
-        bindings.including(root.title, root.hashtag, root.content, root.createdAt, root.createdBy);
+        bindings.including(root.title, root.hashtags, root.content, root.createdAt, root.createdBy);
         // 대소문자 상관 없이
 //        bindings.bind(root.title).first(StringExpression::likeIgnoreCase); // like '${v}'
         bindings.bind(root.title).first(StringExpression::containsIgnoreCase); // like '%s{v}%'. 양옆으로 와일드 카드 사용.
-        bindings.bind(root.hashtag).first(StringExpression::containsIgnoreCase);
+        bindings.bind(root.hashtags.any().hashtagName).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.content).first(StringExpression::containsIgnoreCase);
         bindings.bind(root.createdAt).first(DateTimeExpression::eq);
         bindings.bind(root.createdBy).first(StringExpression::containsIgnoreCase);

@@ -1,9 +1,8 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.config.TestSecurityConfig;
-import com.practice.boardpractice.controller.ArticleCommentController;
 import com.practice.boardpractice.dto.ArticleCommentDto;
-import com.practice.boardpractice.request.ArticleCommentRequest;
+import com.practice.boardpractice.dto.request.ArticleCommentRequest;
 import com.practice.boardpractice.service.ArticleCommentService;
 import com.practice.boardpractice.util.FormDataEncoder;
 import org.junit.jupiter.api.DisplayName;
