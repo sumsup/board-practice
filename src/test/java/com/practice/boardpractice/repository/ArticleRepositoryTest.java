@@ -1,6 +1,7 @@
 package com.practice.boardpractice.repository;
 
 import com.practice.boardpractice.domain.Article;
+import com.practice.boardpractice.domain.Hashtag;
 import com.practice.boardpractice.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,8 +66,7 @@ class ArticleRepositoryTest {
         // when. save한 객체를 리턴 받을 수 있음.
         Article savedArticle = articleRepository.saveAndFlush(Article.of(userAccount,
                 "new article",
-                "new content",
-                "#spring"));
+                "new content"));
 
         // then.
         assertThat(articleRepository.count()).isEqualTo(previousCount + 1);
@@ -77,8 +77,8 @@ class ArticleRepositoryTest {
     void givenTestData_whenUpdating_thenWorksFine() {
         // given.
         Article article = articleRepository.findById(1L).orElseThrow();
-        String updatedHashtag = "#springboot";
-        article.setHashtag(updatedHashtag);
+        Hashtag updatedHashtag = Hashtag.of("#springboot");
+        article.addHashtag(updatedHashtag);
 
         // when.
         // #1. save만 하고 끝내면 @Transactional에 의해서 롤백됨. update commit 안됨.

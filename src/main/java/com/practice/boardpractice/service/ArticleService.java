@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,7 +38,8 @@ public class ArticleService {
             case CONTENT -> articleRepository.findByContentContaining(searchKeyword, pageable).map(ArticleDto::from);
             case ID -> articleRepository.findByUserAccount_UserIdContaining(searchKeyword, pageable).map(ArticleDto::from);
             case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
-            case HASHTAG -> articleRepository.findByHashtag("#" + searchKeyword, pageable).map(ArticleDto::from);
+            case HASHTAG -> articleRepository.findByHashtagNames(Arrays.stream(searchKeyword.split(" ")).toList(), pageable)
+                    .map(ArticleDto::from);
         };
     }
 
@@ -72,7 +74,6 @@ public class ArticleService {
                 if (dto.content() != null) {
                     article.setContent(dto.content());
                 }
-                article.setHashtag(dto.hashtag());
             }
 
             // Transaction이 끝날때 영속성 컨텍스트가 업데이트를 감지해서 실행 한다.
@@ -88,13 +89,17 @@ public class ArticleService {
         articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
+    public long getArticleCount() {
+        return articleRepository.count();
+    }
+
     @Transactional(readOnly = true)
     public Page<ArticleDto> searchArticlesViaHashtag(String hashtag, Pageable pageable) {
         if (hashtag == null || hashtag.isBlank()) {
             return Page.empty(pageable);
         }
 
-        return articleRepository.findByHashtag(hashtag, pageable).map(ArticleDto::from);
+        return articleRepository.findByHashtagNames(null, pageable).map(ArticleDto::from);
 
         // 위 리턴문은 아래와 같이 풀어 쓸 수 있다.
 //        Page<Article> allHashtag = articleRepository.findByHashtag(hashtag, pageable);

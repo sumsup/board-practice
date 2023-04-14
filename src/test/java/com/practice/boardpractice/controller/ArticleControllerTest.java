@@ -1,15 +1,14 @@
 package com.practice.boardpractice.controller;
 
 import com.practice.boardpractice.config.TestSecurityConfig;
-import com.practice.boardpractice.controller.ArticleController;
 import com.practice.boardpractice.domain.constant.FormStatus;
 import com.practice.boardpractice.domain.constant.SearchType;
 import com.practice.boardpractice.dto.ArticleDto;
 import com.practice.boardpractice.dto.ArticleWithCommentsDto;
+import com.practice.boardpractice.dto.HashtagDto;
 import com.practice.boardpractice.dto.UserAccountDto;
 import com.practice.boardpractice.dto.response.ArticleResponse;
-import com.practice.boardpractice.dto.security.BoardPrincipal;
-import com.practice.boardpractice.request.ArticleRequest;
+import com.practice.boardpractice.dto.request.ArticleRequest;
 import com.practice.boardpractice.service.ArticleService;
 import com.practice.boardpractice.service.PaginationService;
 import com.practice.boardpractice.util.FormDataEncoder;
@@ -75,8 +74,8 @@ class ArticleControllerTest {
                 .andExpect(view().name("articles/index")) // view 있는지 이름으로 검증.
                 .andExpect(model().attributeExists("articles"))
                 .andExpect(model().attributeExists("paginationBarNumbers"))
-                .andExpect(model().attributeExists("searchTypes"));
-//                .andExpect(model().attributeExists("searchTypes"));
+                .andExpect(model().attributeExists("searchTypes"))
+                .andExpect(model().attribute("searchTypeHashTag", SearchType.HASHTAG));
 
         // should()는 verify(1)이랑 같다. 즉, 해당 메서드가 '1회 호출 됐음'이랑 같다는 의미.
         // should() is Alias to verify(mock, times(1));
@@ -157,17 +156,22 @@ class ArticleControllerTest {
     void givenNothing_whenRequestingArticleView_thenReturnsArticleView() throws Exception {
         // Given.
         long articleId = 1L;
-        given(articleService.getArticleWithComments(articleId)).willReturn(createArtcileWithCommentsDto());
+        long totalCount = 1L;
+        given(articleService.getArticleWithComments(articleId)).willReturn(createArticleWithCommentsDto());
+        given(articleService.getArticleCount()).willReturn(totalCount);
 
         // When & Then.
-        mvc.perform(get("/articles/1"))
+        mvc.perform(get("/articles/" + articleId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/detail")) // view 있는지 이름으로 검증.
                 .andExpect(model().attributeExists("article"))
-                .andExpect(model().attributeExists("articleComments"));
+                .andExpect(model().attributeExists("articleComments"))
+                .andExpect(model().attribute("totalCount", totalCount))
+                .andExpect(model().attribute("searchTypeHashtag", SearchType.HASHTAG));
 
         then(articleService).should().getArticleWithComments(articleId); // 컨트롤러에서는 이런식으로 특정 메서드가 호출됐는지로 확인하는 식으로 구현.
+        then(articleService).should().getArticleCount();
     }
 
 
@@ -260,7 +264,7 @@ class ArticleControllerTest {
     @Test
     void givenNewArticleInfo_whenRequesting_thenSavesNewArticle() throws Exception {
         // Given
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).saveArticle(any(ArticleDto.class));
 
         // When & Then
@@ -293,7 +297,7 @@ class ArticleControllerTest {
     @WithMockUser
     @DisplayName("[view][GET] 게시글 수정 페이지 - 정상 호출, 인증된 사용자")
     @Test
-    void givenNothing_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
+    void givenAuthorizedUser_whenRequesting_thenReturnsUpdatedArticlePage() throws Exception {
         // Given
         long articleId = 1L;
         ArticleDto dto = createArticleDto();
@@ -315,7 +319,7 @@ class ArticleControllerTest {
     void givenUpdatedArticleInfo_whenRequesting_thenUpdatesNewArticle() throws Exception {
         // Given
         long articleId = 1L;
-        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content", "#new");
+        ArticleRequest articleRequest = ArticleRequest.of("new title", "new content");
         willDoNothing().given(articleService).updateArticle(eq(articleId), any(ArticleDto.class));
 
         // When & Then
@@ -357,18 +361,18 @@ class ArticleControllerTest {
                 createUserAccountDto(),
                 "title",
                 "content",
-                "#java"
+                Set.of(HashtagDto.of("java"))
         );
     }
 
-    private ArticleWithCommentsDto createArtcileWithCommentsDto() {
+    private ArticleWithCommentsDto createArticleWithCommentsDto() {
         return ArticleWithCommentsDto.of(
                 1L,
                 createUserAccountDto(),
                 Set.of(),
                 "title",
                 "content",
-                "#java",
+                Set.of(HashtagDto.of("java")),
                 LocalDateTime.now(),
                 "kim",
                 LocalDateTime.now(),
