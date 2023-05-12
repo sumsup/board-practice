@@ -5,7 +5,9 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
@@ -32,20 +34,35 @@ public class ArticleComment extends AuditingFields {
     private UserAccount userAccount; // 유저 정보 (ID)
 
     @Setter
+    @Column(updatable = false)
+    private Long parentCommentId; // 부모 댓글 ID.
+
+    @ToString.Exclude // 스스로를 ToString 하면 ToString이 재귀적으로 무한으로 생성되므로 오버 플로우 발생. Exclude 해준다.
+    @OrderBy("createdAt ASC")
+    @OneToMany(mappedBy = "parentCommentId", cascade = CascadeType.ALL) // 부모 댓글을 삭제하면, 자식 댓글도 삭제 되도록.
+    private Set<ArticleComment> childComments = new LinkedHashSet<>(); // 순서가 있으니 LinkedHashSet 으로.
+
+    @Setter
     @Column(nullable = false, length = 500)
     private String content;
 
     protected ArticleComment() {
     }
 
-    private ArticleComment(Article article, UserAccount userAccount, String content) {
+    private ArticleComment(Article article, UserAccount userAccount, Long parentCommentId, String content) {
         this.article = article;
         this.userAccount = userAccount;
+        this.parentCommentId = parentCommentId;
         this.content = content;
     }
 
     public static ArticleComment of(Article article, UserAccount userAccount, String content) {
-        return new ArticleComment(article, userAccount, content);
+        return new ArticleComment(article, userAccount, null, content);
+    }
+
+    public void addChildComment(ArticleComment child) {
+        child.setParentCommentId(this.getId());
+        this.getChildComments().add(child);
     }
 
     @Override
