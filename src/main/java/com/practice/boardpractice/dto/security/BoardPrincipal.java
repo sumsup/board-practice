@@ -20,6 +20,7 @@ public record BoardPrincipal(
 ) implements UserDetails { // UserDetails : spring security에서 제공하는 인증정보를 불러옴.
 
     public static BoardPrincipal of(String username, String password, String email, String nickname, String memo) {
+        // 지금은 인증만 하고 권한을 다루고 있지 않아서 임의로 셋팅한다.
         Set<RoleType> roleTypes = Set.of(RoleType.USER);
 
         return new BoardPrincipal(
