@@ -1,7 +1,6 @@
 package com.practice.boardpractice.service;
 
 import com.practice.boardpractice.domain.Article;
-import com.practice.boardpractice.domain.ArticleComment;
 import com.practice.boardpractice.domain.UserAccount;
 import com.practice.boardpractice.dto.ArticleCommentDto;
 import com.practice.boardpractice.repository.ArticleCommentRepository;
