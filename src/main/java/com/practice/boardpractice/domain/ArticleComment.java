@@ -22,9 +22,18 @@ public class ArticleComment extends AuditingFields {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL은 Identity방식으로 생성. <-> 오라클은 Sequel.
     private Long id;
 
-    @Setter @ManyToOne(optional = false) private Article article;
-    @Setter @ManyToOne(optional = false) @JoinColumn(name = "userId") private UserAccount userAccount; // 유저 정보 (ID)
-    @Setter @Column(nullable = false, length = 500) private String content;
+    @Setter
+    @ManyToOne(optional = false)
+    private Article article;
+
+    @Setter
+    @JoinColumn(name = "userId")
+    @ManyToOne(optional = false)
+    private UserAccount userAccount; // 유저 정보 (ID)
+
+    @Setter
+    @Column(nullable = false, length = 500)
+    private String content;
 
     protected ArticleComment() {
     }

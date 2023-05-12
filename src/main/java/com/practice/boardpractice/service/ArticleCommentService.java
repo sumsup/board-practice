@@ -43,6 +43,8 @@ public class ArticleCommentService {
         }
     }
 
+    // 아직 제공하지 않음.
+    @Deprecated
     public void updateArticleComment(ArticleCommentDto dto) {
         try {
             ArticleComment articleComment = articleCommentRepository.getReferenceById(dto.id());
