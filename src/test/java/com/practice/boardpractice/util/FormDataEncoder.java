@@ -12,7 +12,7 @@ import java.util.Map;
 @TestComponent
 public class FormDataEncoder {
 
-    private final ObjectMapper mapper; // TODO: ObjectMapper는 언제 쓰는거임?
+    private final ObjectMapper mapper;
 
     public FormDataEncoder(ObjectMapper mapper) {
         this.mapper = mapper;
