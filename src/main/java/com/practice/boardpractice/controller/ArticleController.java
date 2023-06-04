@@ -8,7 +8,6 @@ import com.practice.boardpractice.dto.security.BoardPrincipal;
 import com.practice.boardpractice.dto.request.ArticleRequest;
 import com.practice.boardpractice.service.ArticleService;
 import com.practice.boardpractice.service.PaginationService;
-import io.micrometer.core.instrument.search.Search;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +50,7 @@ public class ArticleController {
     public String article(@PathVariable Long articleId, ModelMap map) {
         ArticleWithCommentsResponse article = ArticleWithCommentsResponse.from(articleService.getArticleWithComments(articleId));
         map.addAttribute("article", article);
-        map.addAttribute("articleComments", article.articleCommentsResponses());
+        map.addAttribute("articleComments", article.articleCommentsResponse());
         map.addAttribute("totalCount", articleService.getArticleCount());
         map.addAttribute("searchTypeHashtag", SearchType.HASHTAG);
 
