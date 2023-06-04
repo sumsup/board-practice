@@ -76,11 +76,16 @@ public class Article extends AuditingFields { // AuditingFields 클래스로 공
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Article that)) return false;
+
+        // JPA에서 지연로딩을 했을 경우, id 필드가 null 일 경우가 있다.
+        // 이런경우를 대비해서 getter로 반환하도록 수정한다.
         return this.getId() != null && this.getId().equals(that.getId());
     }
 
     @Override
     public int hashCode() {
+        // JPA에서 지연로딩을 했을 경우, id 필드가 null 일 경우가 있다.
+        // 이런경우를 대비해서 getter로 반환하도록 수정한다.
         return Objects.hash(this.getId());
     }
 }
